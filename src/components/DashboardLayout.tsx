@@ -66,6 +66,17 @@ export function DashboardLayout({
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
+    const init: Record<string, boolean> = {};
+    groups.forEach((g) => {
+      init[g.title] = g.items.some((i) => i.to === location.pathname);
+    });
+    init["Overview"] = true;
+    return init;
+  });
+
+  const toggleGroup = (title: string) =>
+    setOpenGroups((s) => ({ ...s, [title]: !s[title] }));
 
   return (
     <div className="min-h-screen flex">
