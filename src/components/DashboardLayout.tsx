@@ -16,6 +16,7 @@ import {
   X,
   Search,
   Bell,
+  ChevronDown,
 } from "lucide-react";
 
 type NavItem = { to: string; label: string; icon: any };
