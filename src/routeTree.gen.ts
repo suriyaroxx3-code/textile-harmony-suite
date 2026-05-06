@@ -11,6 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProductionWeightRouteImport } from './routes/production.weight'
+import { Route as ProductionWeeklyReportRouteImport } from './routes/production.weekly-report'
+import { Route as ProductionStatusRouteImport } from './routes/production.status'
+import { Route as InventoryStockRouteImport } from './routes/inventory.stock'
+import { Route as InventoryAlertsRouteImport } from './routes/inventory.alerts'
+import { Route as ContractorSalaryRouteImport } from './routes/contractor.salary'
+import { Route as ContractorDailyRouteImport } from './routes/contractor.daily'
+import { Route as BillingQuotationRouteImport } from './routes/billing.quotation'
+import { Route as BillingCreateRouteImport } from './routes/billing.create'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -22,31 +31,146 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductionWeightRoute = ProductionWeightRouteImport.update({
+  id: '/production/weight',
+  path: '/production/weight',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductionWeeklyReportRoute = ProductionWeeklyReportRouteImport.update({
+  id: '/production/weekly-report',
+  path: '/production/weekly-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductionStatusRoute = ProductionStatusRouteImport.update({
+  id: '/production/status',
+  path: '/production/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InventoryStockRoute = InventoryStockRouteImport.update({
+  id: '/inventory/stock',
+  path: '/inventory/stock',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InventoryAlertsRoute = InventoryAlertsRouteImport.update({
+  id: '/inventory/alerts',
+  path: '/inventory/alerts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContractorSalaryRoute = ContractorSalaryRouteImport.update({
+  id: '/contractor/salary',
+  path: '/contractor/salary',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContractorDailyRoute = ContractorDailyRouteImport.update({
+  id: '/contractor/daily',
+  path: '/contractor/daily',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BillingQuotationRoute = BillingQuotationRouteImport.update({
+  id: '/billing/quotation',
+  path: '/billing/quotation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BillingCreateRoute = BillingCreateRouteImport.update({
+  id: '/billing/create',
+  path: '/billing/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/billing/create': typeof BillingCreateRoute
+  '/billing/quotation': typeof BillingQuotationRoute
+  '/contractor/daily': typeof ContractorDailyRoute
+  '/contractor/salary': typeof ContractorSalaryRoute
+  '/inventory/alerts': typeof InventoryAlertsRoute
+  '/inventory/stock': typeof InventoryStockRoute
+  '/production/status': typeof ProductionStatusRoute
+  '/production/weekly-report': typeof ProductionWeeklyReportRoute
+  '/production/weight': typeof ProductionWeightRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/billing/create': typeof BillingCreateRoute
+  '/billing/quotation': typeof BillingQuotationRoute
+  '/contractor/daily': typeof ContractorDailyRoute
+  '/contractor/salary': typeof ContractorSalaryRoute
+  '/inventory/alerts': typeof InventoryAlertsRoute
+  '/inventory/stock': typeof InventoryStockRoute
+  '/production/status': typeof ProductionStatusRoute
+  '/production/weekly-report': typeof ProductionWeeklyReportRoute
+  '/production/weight': typeof ProductionWeightRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/billing/create': typeof BillingCreateRoute
+  '/billing/quotation': typeof BillingQuotationRoute
+  '/contractor/daily': typeof ContractorDailyRoute
+  '/contractor/salary': typeof ContractorSalaryRoute
+  '/inventory/alerts': typeof InventoryAlertsRoute
+  '/inventory/stock': typeof InventoryStockRoute
+  '/production/status': typeof ProductionStatusRoute
+  '/production/weekly-report': typeof ProductionWeeklyReportRoute
+  '/production/weight': typeof ProductionWeightRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/billing/create'
+    | '/billing/quotation'
+    | '/contractor/daily'
+    | '/contractor/salary'
+    | '/inventory/alerts'
+    | '/inventory/stock'
+    | '/production/status'
+    | '/production/weekly-report'
+    | '/production/weight'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login'
-  id: '__root__' | '/' | '/login'
+  to:
+    | '/'
+    | '/login'
+    | '/billing/create'
+    | '/billing/quotation'
+    | '/contractor/daily'
+    | '/contractor/salary'
+    | '/inventory/alerts'
+    | '/inventory/stock'
+    | '/production/status'
+    | '/production/weekly-report'
+    | '/production/weight'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/billing/create'
+    | '/billing/quotation'
+    | '/contractor/daily'
+    | '/contractor/salary'
+    | '/inventory/alerts'
+    | '/inventory/stock'
+    | '/production/status'
+    | '/production/weekly-report'
+    | '/production/weight'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  BillingCreateRoute: typeof BillingCreateRoute
+  BillingQuotationRoute: typeof BillingQuotationRoute
+  ContractorDailyRoute: typeof ContractorDailyRoute
+  ContractorSalaryRoute: typeof ContractorSalaryRoute
+  InventoryAlertsRoute: typeof InventoryAlertsRoute
+  InventoryStockRoute: typeof InventoryStockRoute
+  ProductionStatusRoute: typeof ProductionStatusRoute
+  ProductionWeeklyReportRoute: typeof ProductionWeeklyReportRoute
+  ProductionWeightRoute: typeof ProductionWeightRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +189,84 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/production/weight': {
+      id: '/production/weight'
+      path: '/production/weight'
+      fullPath: '/production/weight'
+      preLoaderRoute: typeof ProductionWeightRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/production/weekly-report': {
+      id: '/production/weekly-report'
+      path: '/production/weekly-report'
+      fullPath: '/production/weekly-report'
+      preLoaderRoute: typeof ProductionWeeklyReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/production/status': {
+      id: '/production/status'
+      path: '/production/status'
+      fullPath: '/production/status'
+      preLoaderRoute: typeof ProductionStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inventory/stock': {
+      id: '/inventory/stock'
+      path: '/inventory/stock'
+      fullPath: '/inventory/stock'
+      preLoaderRoute: typeof InventoryStockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inventory/alerts': {
+      id: '/inventory/alerts'
+      path: '/inventory/alerts'
+      fullPath: '/inventory/alerts'
+      preLoaderRoute: typeof InventoryAlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contractor/salary': {
+      id: '/contractor/salary'
+      path: '/contractor/salary'
+      fullPath: '/contractor/salary'
+      preLoaderRoute: typeof ContractorSalaryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contractor/daily': {
+      id: '/contractor/daily'
+      path: '/contractor/daily'
+      fullPath: '/contractor/daily'
+      preLoaderRoute: typeof ContractorDailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/billing/quotation': {
+      id: '/billing/quotation'
+      path: '/billing/quotation'
+      fullPath: '/billing/quotation'
+      preLoaderRoute: typeof BillingQuotationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/billing/create': {
+      id: '/billing/create'
+      path: '/billing/create'
+      fullPath: '/billing/create'
+      preLoaderRoute: typeof BillingCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  BillingCreateRoute: BillingCreateRoute,
+  BillingQuotationRoute: BillingQuotationRoute,
+  ContractorDailyRoute: ContractorDailyRoute,
+  ContractorSalaryRoute: ContractorSalaryRoute,
+  InventoryAlertsRoute: InventoryAlertsRoute,
+  InventoryStockRoute: InventoryStockRoute,
+  ProductionStatusRoute: ProductionStatusRoute,
+  ProductionWeeklyReportRoute: ProductionWeeklyReportRoute,
+  ProductionWeightRoute: ProductionWeightRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
