@@ -16,6 +16,7 @@ import {
   X,
   Search,
   Bell,
+  ChevronDown,
 } from "lucide-react";
 
 type NavItem = { to: string; label: string; icon: any };
@@ -65,6 +66,17 @@ export function DashboardLayout({
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
+    const init: Record<string, boolean> = {};
+    groups.forEach((g) => {
+      init[g.title] = g.items.some((i) => i.to === location.pathname);
+    });
+    init["Overview"] = true;
+    return init;
+  });
+
+  const toggleGroup = (title: string) =>
+    setOpenGroups((s) => ({ ...s, [title]: !s[title] }));
 
   return (
     <div className="min-h-screen flex">
@@ -90,35 +102,69 @@ export function DashboardLayout({
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-6">
-          {groups.map((g) => (
-            <div key={g.title}>
-              <div className="px-3 mb-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                {g.title}
+        <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-2">
+          {groups.map((g) => {
+            const isOverview = g.items.length === 1 && g.title === "Overview";
+            const expanded = openGroups[g.title];
+            if (isOverview) {
+              const item = g.items[0];
+              const Icon = item.icon;
+              const active = location.pathname === item.to;
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all ${
+                    active
+                      ? "bg-primary text-primary-foreground shadow-soft"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent"
+                  }`}
+                >
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{item.label}</span>
+                </Link>
+              );
+            }
+            return (
+              <div key={g.title}>
+                <button
+                  onClick={() => toggleGroup(g.title)}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent transition"
+                >
+                  <span className="flex-1 text-left">{g.title}</span>
+                  <ChevronDown
+                    className={`h-4 w-4 text-muted-foreground transition-transform ${
+                      expanded ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {expanded && (
+                  <div className="mt-1 ml-2 pl-2 border-l border-sidebar-border space-y-0.5">
+                    {g.items.map((item) => {
+                      const Icon = item.icon;
+                      const active = location.pathname === item.to;
+                      return (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          onClick={() => setOpen(false)}
+                          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all ${
+                            active
+                              ? "bg-primary text-primary-foreground shadow-soft"
+                              : "text-sidebar-foreground hover:bg-sidebar-accent"
+                          }`}
+                        >
+                          <Icon className="h-4 w-4 shrink-0" />
+                          <span className="truncate">{item.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-              <div className="space-y-0.5">
-                {g.items.map((item) => {
-                  const Icon = item.icon;
-                  const active = location.pathname === item.to;
-                  return (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      onClick={() => setOpen(false)}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all ${
-                        active
-                          ? "bg-primary text-primary-foreground shadow-soft"
-                          : "text-sidebar-foreground hover:bg-sidebar-accent"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4 shrink-0" />
-                      <span className="truncate">{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </nav>
 
         <div className="p-4 border-t border-sidebar-border">
