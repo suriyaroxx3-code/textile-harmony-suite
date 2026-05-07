@@ -87,12 +87,16 @@ export function DashboardLayout({
         }`}
       >
         <div className="px-6 py-6 flex items-center gap-3 border-b border-sidebar-border">
-          <div className="h-10 w-10 rounded-xl bg-hero shadow-soft grid place-items-center text-primary-foreground font-display text-lg">
-            V
+          <div className="h-10 w-10 rounded-xl bg-hero shadow-soft grid place-items-center text-primary-foreground font-display text-lg animate-float">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.4">
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="5" />
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+            </svg>
           </div>
           <div>
-            <div className="font-display text-lg leading-none text-sidebar-foreground">Varnam</div>
-            <div className="text-xs text-muted-foreground mt-1">Textile Manager</div>
+            <div className="font-display text-lg leading-none text-sidebar-foreground">Bullseye</div>
+            <div className="text-xs text-muted-foreground mt-1">Textile Operations</div>
           </div>
           <button
             className="ml-auto lg:hidden text-muted-foreground"
@@ -218,7 +222,7 @@ export function DashboardLayout({
           </div>
         </header>
 
-        <div className="p-6 lg:p-10 max-w-[1400px] mx-auto">{children}</div>
+        <div key={location.pathname} className="p-6 lg:p-10 max-w-[1400px] mx-auto animate-fade-in">{children}</div>
       </main>
     </div>
   );
