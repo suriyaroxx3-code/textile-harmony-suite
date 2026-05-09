@@ -1,22 +1,30 @@
 // @ts-nocheck
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
-import { Section, Stat, Pill, Btn } from "@/components/PageHelpers";
-import { Download } from "lucide-react";
+import { Section, Stat, Pill, Btn, inputCls } from "@/components/PageHelpers";
+import { Download, Plus, Search } from "lucide-react";
 
 export const Route = createFileRoute("/contractor/salary")({
   head: () => ({ meta: [{ title: "Contractor Salary — BrushPack" }] }),
   component: Page,
 });
 
-const rows = [
-  { name: "Ramesh Kumar", area: "Sorting Line A", workers: 22, amount: 78000, status: "Paid" },
-  { name: "Suresh Pillai", area: "Cardboard Packing", workers: 28, amount: 96500, status: "Pending" },
-  { name: "Mahesh Naidu", area: "Plastic Sleeve Line", workers: 18, amount: 62200, status: "Paid" },
-  { name: "Lakshmi Reddy", area: "QC & Dispatch", workers: 24, amount: 84800, status: "Pending" },
-];
-
 function Page() {
+  const [rows, setRows] = useState([]);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/contractors")
+      .then(res => res.json())
+      .then(data => setRows(data));
+  }, []);
+
+  const filteredRows = rows.filter(r => 
+    r.name.toLowerCase().includes(search.toLowerCase()) || 
+    r.area.toLowerCase().includes(search.toLowerCase())
+  );
+
   const total = rows.reduce((s, r) => s + r.amount, 0);
   const paid = rows.filter(r => r.status === "Paid").reduce((s, r) => s + r.amount, 0);
   const pending = total - paid;
@@ -25,14 +33,27 @@ function Page() {
     <DashboardLayout title="Contractor Salary" subtitle="Monthly payouts to area contractors managing the packing lines.">
       <div className="grid sm:grid-cols-3 gap-4 mb-6">
         <Stat label="Total Payable" value={`₹${total.toLocaleString("en-IN")}`} hint="May 2026" />
-        <Stat label="Paid" value={`₹${paid.toLocaleString("en-IN")}`} hint="2 contractors" />
-        <Stat label="Pending" value={`₹${pending.toLocaleString("en-IN")}`} hint="2 contractors" />
+        <Stat label="Paid" value={`₹${paid.toLocaleString("en-IN")}`} hint="Paid contractors" />
+        <Stat label="Pending" value={`₹${pending.toLocaleString("en-IN")}`} hint="Pending contractors" />
       </div>
 
-      <Section
-        title="Contractors"
-        action={<Btn variant="ghost"><Download className="h-4 w-4" /> Export</Btn>}
-      >
+      <div className="flex justify-between items-center mb-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+          <input 
+            type="text" 
+            placeholder="Search contractor or area..." 
+            className={`${inputCls} pl-9 w-[300px]`}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <Link to="/contractor/add">
+          <Btn variant="accent"><Plus className="h-4 w-4" /> Add Contractor</Btn>
+        </Link>
+      </div>
+
+      <Section title="Contractors" action={<Btn variant="ghost"><Download className="h-4 w-4" /> Export</Btn>}>
         <div className="overflow-x-auto -mx-6">
           <table className="w-full text-sm">
             <thead>
@@ -46,8 +67,8 @@ function Page() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => (
-                <tr key={r.name} className="border-b border-border/60 last:border-0 hover:bg-secondary/30 transition">
+              {filteredRows.map((r) => (
+                <tr key={r.id} className="border-b border-border/60 last:border-0 hover:bg-secondary/30 transition">
                   <td className="px-6 py-3">
                     <div className="flex items-center gap-3">
                       <div className="h-8 w-8 rounded-full bg-warm grid place-items-center text-accent-foreground text-xs font-medium">
