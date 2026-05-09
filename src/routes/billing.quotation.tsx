@@ -1,6 +1,5 @@
-// @ts-nocheck
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Section, Pill, Btn, Stat, Field, inputCls } from "@/components/PageHelpers";
 import { Plus, X, Check } from "lucide-react";
@@ -13,33 +12,66 @@ export const Route = createFileRoute("/billing/quotation")({
 function Page() {
   const [activeTab, setActiveTab] = useState("all"); // "all" or "status"
   const [isAdding, setIsAdding] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   
   // Data merged with generated bills (INV-) as requested
-  const [records, setRecords] = useState([
-    { id: "INV-2026-0184", contractor: "BrightBrush Co. Pvt. Ltd.", date: "09 May 2026", value: 35400, status: "Pending", type: "bill" },
-    { id: "Q-0104",         contractor: "BrightBrush Co.",        date: "07 May 2026", value: 184500, status: "Sent", type: "quote" },
-    { id: "Q-0103",         contractor: "ArtPro Supplies",        date: "04 May 2026", value: 92800,  status: "Accepted", type: "quote" },
-    { id: "INV-2026-0180", contractor: "Plastix Industries",      date: "28 Apr 2026", value: 12000,  status: "Received", type: "bill" },
-  ]);
+  const [records, setRecords] = useState([]);
 
-  const [newEntry, setNewEntry] = useState({ id: "", contractor: "", date: "", value: "", status: "Draft" });
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("billingRecords") || "[]");
+    setRecords(stored);
+  }, []);
+
+  const [newEntry, setNewEntry] = useState({
+    id: "",
+    contractor: "",
+    date: "",
+    value: "",
+    status: "Draft"
+  });
+  const [editEntry, setEditEntry] = useState({
+    id: "",
+    contractor: "",
+    date: "",
+    value: "",
+    status: ""
+  });
 
   const handleAdd = () => {
     if (!newEntry.id || !newEntry.contractor) return;
-    setRecords([{ ...newEntry, value: Number(newEntry.value), type: "quote" }, ...records]);
+    const updated = [{ ...newEntry, value: Number(newEntry.value), type: "quote" }, ...records];
+    setRecords(updated);
+    localStorage.setItem("billingRecords", JSON.stringify(updated));
     setIsAdding(false);
     setNewEntry({ id: "", contractor: "", date: "", value: "", status: "Draft" });
   };
 
+  const handleEdit = () => {
+    if (!editEntry.id || !editEntry.contractor) return;
+    const updated = records.map((r) =>
+      r.id === editingId ? { ...editEntry, value: Number(editEntry.value) } : r
+    );
+    setRecords(updated);
+    localStorage.setItem("billingRecords", JSON.stringify(updated));
+    setEditingId(null);
+    setEditEntry({ id: "", contractor: "", date: "", value: "", status: "" });
+  };
+
   const tone = (s) => {
-    const map = { Accepted: "success", Received: "success", Sent: "info", Pending: "warn", Draft: "muted" };
+    const map = {
+      Accepted: "success",
+      Received: "success",
+      Sent: "info",
+      Pending: "warn",
+      Draft: "muted"
+    };
     return map[s] || "muted";
   };
 
   const stats = [
-    { label: "Accepted", value: records.filter(r => r.status === "Accepted").length },
-    { label: "Sent", value: records.filter(r => r.status === "Sent").length },
-    { label: "Pending", value: records.filter(r => r.status === "Pending").length },
+    { label: "Accepted", value: records.filter((r) => r.status === "Accepted").length },
+    { label: "Sent", value: records.filter((r) => r.status === "Sent").length },
+    { label: "Pending", value: records.filter((r) => r.status === "Pending").length },
   ];
 
   return (
@@ -61,7 +93,6 @@ function Page() {
         title={activeTab === "status" ? "ORDER TRACKING STATUS" : "ALL QUOTATIONS & BILLS"}
         action={
           <div className="flex gap-2">
-            <Link to="/billing/create"><Btn variant="ghost">Create Billing</Btn></Link>
             <Btn variant="accent" onClick={() => setIsAdding(true)}><Plus className="h-4 w-4" /> New Quotation</Btn>
           </div>
         }
@@ -98,17 +129,39 @@ function Page() {
               {records
                 .filter(r => activeTab === "status" ? (r.status === "Pending" || r.status === "Received") : true)
                 .map((r) => (
-                <tr key={r.id} className="border-b border-border/60 last:border-0 hover:bg-secondary/30 transition">
-                  <td className="px-6 py-3 font-medium">{r.id}</td>
-                  <td className="px-6 py-3">{r.contractor}</td>
-                  <td className="px-6 py-3 text-muted-foreground">{r.date}</td>
-                  <td className="px-6 py-3 font-medium">₹{r.value.toLocaleString("en-IN")}</td>
-                  <td className="px-6 py-3"><Pill tone={tone(r.status)}>{r.status}</Pill></td>
-                  <td className="px-6 py-3 text-right">
-                    <Btn variant="ghost">Edit</Btn>
-                  </td>
-                </tr>
-              ))}
+                  editingId === r.id ? (
+                    <tr key={r.id} className="bg-secondary/20">
+                      <td className="px-6 py-2"><input className={inputCls} value={editEntry.id} onChange={e => setEditEntry({...editEntry, id: e.target.value})} /></td>
+                      <td className="px-6 py-2"><input className={inputCls} value={editEntry.contractor} onChange={e => setEditEntry({...editEntry, contractor: e.target.value})} /></td>
+                      <td className="px-6 py-2"><input type="date" className={inputCls} value={editEntry.date} onChange={e => setEditEntry({...editEntry, date: e.target.value})} /></td>
+                      <td className="px-6 py-2"><input type="number" className={inputCls} value={editEntry.value} onChange={e => setEditEntry({...editEntry, value: e.target.value})} /></td>
+                      <td className="px-6 py-2">
+                        <select className={inputCls} value={editEntry.status} onChange={e => setEditEntry({...editEntry, status: e.target.value})}>
+                          <option value="Draft">Draft</option>
+                          <option value="Sent">Sent</option>
+                          <option value="Pending">Pending</option>
+                          <option value="Accepted">Accepted</option>
+                          <option value="Received">Received</option>
+                        </select>
+                      </td>
+                      <td className="px-6 py-2 text-right flex gap-1 justify-end">
+                        <Btn onClick={handleEdit} size="sm"><Check className="h-4 w-4" /></Btn>
+                        <Btn variant="ghost" onClick={() => setEditingId(null)} size="sm"><X className="h-4 w-4" /></Btn>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr key={r.id} className="border-b border-border/60 last:border-0 hover:bg-secondary/30 transition">
+                      <td className="px-6 py-3 font-medium">{r.id}</td>
+                      <td className="px-6 py-3">{r.contractor}</td>
+                      <td className="px-6 py-3 text-muted-foreground">{r.date}</td>
+                      <td className="px-6 py-3 font-medium">₹{r.value.toLocaleString("en-IN")}</td>
+                      <td className="px-6 py-3"><Pill tone={tone(r.status)}>{r.status}</Pill></td>
+                      <td className="px-6 py-3 text-right">
+                        <Btn variant="ghost" onClick={() => { setEditingId(r.id); setEditEntry(r); }}>Edit</Btn>
+                      </td>
+                    </tr>
+                  )
+                ))}
             </tbody>
           </table>
         </div>

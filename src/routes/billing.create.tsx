@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Section, Field, inputCls, Btn } from "@/components/PageHelpers";
@@ -11,6 +11,13 @@ export const Route = createFileRoute("/billing/create")({
 });
 
 function Page() {
+  const navigate = useNavigate();
+  const [invoiceNo, setInvoiceNo] = useState("INV-2026-0184");
+  const [date, setDate] = useState("2026-05-09");
+  const [clientName, setClientName] = useState("");
+  const [gstin, setGstin] = useState("");
+  const [address, setAddress] = useState("");
+  const [placeOfSupply, setPlaceOfSupply] = useState("");
   const [items, setItems] = useState([
     { desc: "Round Tip 12mm — Cardboard Pack", qty: 2500, rate: 12 },
     { desc: "Flat Tip 18mm — Plastic Sleeve",  qty: 1800, rate: 9  },
@@ -18,6 +25,34 @@ function Page() {
   const sub = items.reduce((s, i) => s + i.qty * i.rate, 0);
   const gst = sub * 0.18;
   const total = sub + gst;
+
+  const handleSendInvoice = () => {
+    const bill = {
+      id: invoiceNo,
+      contractor: clientName,
+      date: date,
+      value: total,
+      status: "Sent",
+      type: "bill"
+    };
+    const existing = JSON.parse(localStorage.getItem("billingRecords") || "[]");
+    localStorage.setItem("billingRecords", JSON.stringify([bill, ...existing]));
+    navigate({ to: "/billing/quotation" });
+  };
+
+  const handleSaveDraft = () => {
+    const bill = {
+      id: invoiceNo,
+      contractor: clientName,
+      date: date,
+      value: total,
+      status: "Draft",
+      type: "bill"
+    };
+    const existing = JSON.parse(localStorage.getItem("billingRecords") || "[]");
+    localStorage.setItem("billingRecords", JSON.stringify([bill, ...existing]));
+    navigate({ to: "/billing/quotation" });
+  };
 
   const update = (idx, k, v) => {
     const next = [...items];
@@ -31,12 +66,12 @@ function Page() {
         <div className="lg:col-span-2 space-y-6">
           <Section title="Invoice Details">
             <div className="grid md:grid-cols-2 gap-4">
-              <Field label="Invoice No."><input className={inputCls} defaultValue="INV-2026-0184" /></Field>
-              <Field label="Date"><input type="date" className={inputCls} defaultValue="2026-05-09" /></Field>
-              <Field label="Client Name"><input className={inputCls} placeholder="BrightBrush Co. Pvt. Ltd." /></Field>
-              <Field label="GSTIN"><input className={inputCls} placeholder="27AAACS1234A1Z5" /></Field>
-              <Field label="Address"><input className={inputCls} placeholder="Plot 14, MIDC, Bhiwandi" /></Field>
-              <Field label="Place of Supply"><input className={inputCls} placeholder="Maharashtra" /></Field>
+              <Field label="Invoice No."><input className={inputCls} value={invoiceNo} onChange={(e) => setInvoiceNo(e.target.value)} /></Field>
+              <Field label="Date"><input type="date" className={inputCls} value={date} onChange={(e) => setDate(e.target.value)} /></Field>
+              <Field label="Client Name"><input className={inputCls} value={clientName} onChange={(e) => setClientName(e.target.value)} placeholder="BrightBrush Co. Pvt. Ltd." /></Field>
+              <Field label="GSTIN"><input className={inputCls} value={gstin} onChange={(e) => setGstin(e.target.value)} placeholder="27AAACS1234A1Z5" /></Field>
+              <Field label="Address"><input className={inputCls} value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Plot 14, MIDC, Bhiwandi" /></Field>
+              <Field label="Place of Supply"><input className={inputCls} value={placeOfSupply} onChange={(e) => setPlaceOfSupply(e.target.value)} placeholder="Maharashtra" /></Field>
             </div>
           </Section>
 
@@ -98,8 +133,8 @@ function Page() {
               </div>
             </dl>
             <div className="mt-6 grid gap-2">
-              <Btn><Send className="h-4 w-4" /> Send Invoice</Btn>
-              <Btn variant="ghost"><Save className="h-4 w-4" /> Save Draft</Btn>
+              <Btn onClick={handleSendInvoice}><Send className="h-4 w-4" /> Send Invoice</Btn>
+              <Btn variant="ghost" onClick={handleSaveDraft}><Save className="h-4 w-4" /> Save Draft</Btn>
             </div>
           </Section>
 
