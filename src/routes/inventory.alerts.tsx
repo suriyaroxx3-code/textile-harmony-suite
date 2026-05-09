@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Section, Btn } from "@/components/PageHelpers";
 import { AlertTriangle, ShoppingCart } from "lucide-react";
@@ -9,15 +10,36 @@ export const Route = createFileRoute("/inventory/alerts")({
   component: Page,
 });
 
-const alerts = [
+// Default alerts for reference
+const defaultAlerts = [
   { name: "Cardboard Boxes — Small", qty: 1100, unit: "pcs",   min: 1500, supplier: "PackKraft Industries", eta: "2 days" },
   { name: "Blister Cards — 18mm",    qty: 920,  unit: "pcs",   min: 1500, supplier: "ClearPlast Co.",       eta: "3 days" },
   { name: "Sealing Tape — 48mm",     qty: 14,   unit: "rolls", min: 30,   supplier: "AdhesivePro",          eta: "1 day"  },
 ];
 
 function Page() {
+  const [alerts, setAlerts] = useState([]);
+
+  useEffect(() => {
+    // Try to get alerts from localStorage first
+    const stored = localStorage.getItem('lowStockNotifications');
+    if (stored) {
+      try {
+        const items = JSON.parse(stored);
+        setAlerts(items.map(item => ({
+          ...item,
+          supplier: "TBD",
+          eta: "Pending"
+        })));
+      } catch (e) {
+        setAlerts(defaultAlerts);
+      }
+    } else {
+      setAlerts(defaultAlerts);
+    }
+  }, []);
   return (
-    <DashboardLayout title="Low Stock Alerts" subtitle="Packaging materials below minimum threshold — reorder soon.">
+    <DashboardLayout title="Low Stock Alerts" subtitle="Packaging materials below minimum threshold — reorder soon." lowStockItems={alerts}>
       <div className="rounded-2xl bg-warm/15 border border-accent/30 p-5 mb-6 flex gap-4 hover-lift">
         <div className="h-10 w-10 rounded-full bg-accent grid place-items-center text-accent-foreground shrink-0 animate-float">
           <AlertTriangle className="h-5 w-5" />
