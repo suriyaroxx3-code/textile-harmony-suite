@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Section, Pill, Btn, Stat, Field, inputCls } from "@/components/PageHelpers";
@@ -55,6 +55,17 @@ function Page() {
     localStorage.setItem("billingRecords", JSON.stringify(updated));
     setEditingId(null);
     setEditEntry({ id: "", contractor: "", date: "", value: "", status: "" });
+  };
+
+  const handleDelete = (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this quotation/bill? This action cannot be undone."
+    );
+    if (!confirmDelete) return;
+
+    const updated = records.filter((r) => r.id !== id);
+    setRecords(updated);
+    localStorage.setItem("billingRecords", JSON.stringify(updated));
   };
 
   const tone = (s) => {
@@ -127,7 +138,7 @@ function Page() {
 
               {/* Data rows filtered by tab */}
               {records
-                .filter(r => activeTab === "status" ? (r.status === "Pending" || r.status === "Received") : true)
+                .filter(r => activeTab === "status" ? r.status !== "Draft" : true)
                 .map((r) => (
                   editingId === r.id ? (
                     <tr key={r.id} className="bg-secondary/20">
@@ -156,8 +167,9 @@ function Page() {
                       <td className="px-6 py-3 text-muted-foreground">{r.date}</td>
                       <td className="px-6 py-3 font-medium">₹{r.value.toLocaleString("en-IN")}</td>
                       <td className="px-6 py-3"><Pill tone={tone(r.status)}>{r.status}</Pill></td>
-                      <td className="px-6 py-3 text-right">
+                      <td className="px-6 py-3 text-right flex gap-2 justify-end">
                         <Btn variant="ghost" onClick={() => { setEditingId(r.id); setEditEntry(r); }}>Edit</Btn>
+                        <Btn variant="destructive" onClick={() => handleDelete(r.id)}>Delete</Btn>
                       </td>
                     </tr>
                   )
