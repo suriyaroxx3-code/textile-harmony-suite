@@ -19,8 +19,10 @@ import { Route as InventoryStockRouteImport } from './routes/inventory.stock'
 import { Route as InventoryAlertsRouteImport } from './routes/inventory.alerts'
 import { Route as ContractorSalaryRouteImport } from './routes/contractor.salary'
 import { Route as ContractorDailyRouteImport } from './routes/contractor.daily'
+import { Route as ContractorAddRouteImport } from './routes/contractor.add'
 import { Route as BillingQuotationRouteImport } from './routes/billing.quotation'
 import { Route as BillingCreateRouteImport } from './routes/billing.create'
+import { Route as ContractorWorkersAddRouteImport } from './routes/contractor.workers.add'
 
 const StstusRoute = StstusRouteImport.update({
   id: '/ststus',
@@ -72,6 +74,11 @@ const ContractorDailyRoute = ContractorDailyRouteImport.update({
   path: '/contractor/daily',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContractorAddRoute = ContractorAddRouteImport.update({
+  id: '/contractor/add',
+  path: '/contractor/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BillingQuotationRoute = BillingQuotationRouteImport.update({
   id: '/billing/quotation',
   path: '/billing/quotation',
@@ -82,6 +89,11 @@ const BillingCreateRoute = BillingCreateRouteImport.update({
   path: '/billing/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContractorWorkersAddRoute = ContractorWorkersAddRouteImport.update({
+  id: '/contractor/workers/add',
+  path: '/contractor/workers/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/ststus': typeof StstusRoute
   '/billing/create': typeof BillingCreateRoute
   '/billing/quotation': typeof BillingQuotationRoute
+  '/contractor/add': typeof ContractorAddRoute
   '/contractor/daily': typeof ContractorDailyRoute
   '/contractor/salary': typeof ContractorSalaryRoute
   '/inventory/alerts': typeof InventoryAlertsRoute
@@ -96,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/production/status': typeof ProductionStatusRoute
   '/production/weekly-report': typeof ProductionWeeklyReportRoute
   '/production/weight': typeof ProductionWeightRoute
+  '/contractor/workers/add': typeof ContractorWorkersAddRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -103,6 +117,7 @@ export interface FileRoutesByTo {
   '/ststus': typeof StstusRoute
   '/billing/create': typeof BillingCreateRoute
   '/billing/quotation': typeof BillingQuotationRoute
+  '/contractor/add': typeof ContractorAddRoute
   '/contractor/daily': typeof ContractorDailyRoute
   '/contractor/salary': typeof ContractorSalaryRoute
   '/inventory/alerts': typeof InventoryAlertsRoute
@@ -110,6 +125,7 @@ export interface FileRoutesByTo {
   '/production/status': typeof ProductionStatusRoute
   '/production/weekly-report': typeof ProductionWeeklyReportRoute
   '/production/weight': typeof ProductionWeightRoute
+  '/contractor/workers/add': typeof ContractorWorkersAddRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -118,6 +134,7 @@ export interface FileRoutesById {
   '/ststus': typeof StstusRoute
   '/billing/create': typeof BillingCreateRoute
   '/billing/quotation': typeof BillingQuotationRoute
+  '/contractor/add': typeof ContractorAddRoute
   '/contractor/daily': typeof ContractorDailyRoute
   '/contractor/salary': typeof ContractorSalaryRoute
   '/inventory/alerts': typeof InventoryAlertsRoute
@@ -125,6 +142,7 @@ export interface FileRoutesById {
   '/production/status': typeof ProductionStatusRoute
   '/production/weekly-report': typeof ProductionWeeklyReportRoute
   '/production/weight': typeof ProductionWeightRoute
+  '/contractor/workers/add': typeof ContractorWorkersAddRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -134,6 +152,7 @@ export interface FileRouteTypes {
     | '/ststus'
     | '/billing/create'
     | '/billing/quotation'
+    | '/contractor/add'
     | '/contractor/daily'
     | '/contractor/salary'
     | '/inventory/alerts'
@@ -141,6 +160,7 @@ export interface FileRouteTypes {
     | '/production/status'
     | '/production/weekly-report'
     | '/production/weight'
+    | '/contractor/workers/add'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -148,6 +168,7 @@ export interface FileRouteTypes {
     | '/ststus'
     | '/billing/create'
     | '/billing/quotation'
+    | '/contractor/add'
     | '/contractor/daily'
     | '/contractor/salary'
     | '/inventory/alerts'
@@ -155,6 +176,7 @@ export interface FileRouteTypes {
     | '/production/status'
     | '/production/weekly-report'
     | '/production/weight'
+    | '/contractor/workers/add'
   id:
     | '__root__'
     | '/'
@@ -162,6 +184,7 @@ export interface FileRouteTypes {
     | '/ststus'
     | '/billing/create'
     | '/billing/quotation'
+    | '/contractor/add'
     | '/contractor/daily'
     | '/contractor/salary'
     | '/inventory/alerts'
@@ -169,6 +192,7 @@ export interface FileRouteTypes {
     | '/production/status'
     | '/production/weekly-report'
     | '/production/weight'
+    | '/contractor/workers/add'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -177,6 +201,7 @@ export interface RootRouteChildren {
   StstusRoute: typeof StstusRoute
   BillingCreateRoute: typeof BillingCreateRoute
   BillingQuotationRoute: typeof BillingQuotationRoute
+  ContractorAddRoute: typeof ContractorAddRoute
   ContractorDailyRoute: typeof ContractorDailyRoute
   ContractorSalaryRoute: typeof ContractorSalaryRoute
   InventoryAlertsRoute: typeof InventoryAlertsRoute
@@ -184,6 +209,7 @@ export interface RootRouteChildren {
   ProductionStatusRoute: typeof ProductionStatusRoute
   ProductionWeeklyReportRoute: typeof ProductionWeeklyReportRoute
   ProductionWeightRoute: typeof ProductionWeightRoute
+  ContractorWorkersAddRoute: typeof ContractorWorkersAddRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -258,6 +284,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContractorDailyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contractor/add': {
+      id: '/contractor/add'
+      path: '/contractor/add'
+      fullPath: '/contractor/add'
+      preLoaderRoute: typeof ContractorAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/billing/quotation': {
       id: '/billing/quotation'
       path: '/billing/quotation'
@@ -272,6 +305,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BillingCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contractor/workers/add': {
+      id: '/contractor/workers/add'
+      path: '/contractor/workers/add'
+      fullPath: '/contractor/workers/add'
+      preLoaderRoute: typeof ContractorWorkersAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -281,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   StstusRoute: StstusRoute,
   BillingCreateRoute: BillingCreateRoute,
   BillingQuotationRoute: BillingQuotationRoute,
+  ContractorAddRoute: ContractorAddRoute,
   ContractorDailyRoute: ContractorDailyRoute,
   ContractorSalaryRoute: ContractorSalaryRoute,
   InventoryAlertsRoute: InventoryAlertsRoute,
@@ -288,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductionStatusRoute: ProductionStatusRoute,
   ProductionWeeklyReportRoute: ProductionWeeklyReportRoute,
   ProductionWeightRoute: ProductionWeightRoute,
+  ContractorWorkersAddRoute: ContractorWorkersAddRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
