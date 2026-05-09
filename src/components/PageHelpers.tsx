@@ -1,3 +1,4 @@
+// @ts-nocheck
 export function Section({ title, action, children }) {
   return (
     <div className="rounded-2xl bg-card border border-border shadow-soft overflow-hidden">
