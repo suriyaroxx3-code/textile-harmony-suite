@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   PackageCheck,
@@ -19,6 +19,7 @@ import {
   Bell,
   ChevronDown,
   Package,
+  AlertCircle,
 } from "lucide-react";
 
 const groups = [
@@ -54,10 +55,12 @@ const groups = [
   },
 ];
 
-export function DashboardLayout({ children, title, subtitle }) {
+export function DashboardLayout({ children, title, subtitle, lowStockItems = [] }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const [openGroups, setOpenGroups] = useState(() => {
     const init = {};
     groups.forEach((g) => {
@@ -67,8 +70,45 @@ export function DashboardLayout({ children, title, subtitle }) {
     return init;
   });
 
+  useEffect(() => {
+    const stored = localStorage.getItem('lowStockNotifications');
+    if (stored) {
+      try {
+        setNotifications(JSON.parse(stored));
+      } catch (e) {
+        setNotifications([]);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (lowStockItems && lowStockItems.length > 0) {
+      const newNotifications = lowStockItems.map((item) => ({
+        id: item.name,
+        name: item.name,
+        qty: item.qty,
+        min: item.min,
+        unit: item.unit,
+        timestamp: new Date().toLocaleTimeString(),
+      }));
+      setNotifications(newNotifications);
+      localStorage.setItem('lowStockNotifications', JSON.stringify(newNotifications));
+    }
+  }, [lowStockItems]);
+
   const toggleGroup = (title) =>
     setOpenGroups((s) => ({ ...s, [title]: !s[title] }));
+
+  const clearNotification = (id) => {
+    const updated = notifications.filter((n) => n.id !== id);
+    setNotifications(updated);
+    localStorage.setItem('lowStockNotifications', JSON.stringify(updated));
+  };
+
+  const clearAllNotifications = () => {
+    setNotifications([]);
+    localStorage.removeItem('lowStockNotifications');
+  };
 
   return (
     <div className="min-h-screen flex">
@@ -199,10 +239,80 @@ export function DashboardLayout({ children, title, subtitle }) {
                 className="bg-transparent outline-none text-sm w-full placeholder:text-muted-foreground"
               />
             </div>
-            <button className="relative p-2 rounded-lg hover:bg-secondary">
-              <Bell className="h-5 w-5 text-muted-foreground" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-accent" />
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setNotificationOpen(!notificationOpen)}
+                className="relative p-2 rounded-lg hover:bg-secondary transition"
+              >
+                <Bell className="h-5 w-5 text-muted-foreground" />
+                {notifications.length > 0 && (
+                  <span className="absolute top-1 right-1 h-5 w-5 rounded-full bg-accent text-white text-xs grid place-items-center font-semibold">
+                    {notifications.length}
+                  </span>
+                )}
+              </button>
+              {notificationOpen && (
+                <div className="absolute right-0 top-full mt-2 w-80 bg-background border border-border rounded-lg shadow-lg z-50 animate-fade-in">
+                  <div className="p-4 border-b border-border flex items-center justify-between">
+                    <div className="font-semibold flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4 text-accent" />
+                      Low Stock Alerts
+                    </div>
+                    {notifications.length > 0 && (
+                      <button
+                        onClick={clearAllNotifications}
+                        className="text-xs text-muted-foreground hover:text-foreground"
+                      >
+                        Clear all
+                      </button>
+                    )}
+                  </div>
+                  <div className="max-h-96 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="p-4 text-center text-sm text-muted-foreground">No low stock alerts</div>
+                    ) : (
+                      notifications.map((notif) => (
+                        <div key={notif.id} className="p-3 border-b border-border/50 last:border-0 hover:bg-secondary/30 transition">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-sm truncate">{notif.name}</div>
+                              <div className="text-xs text-destructive mt-1">
+                                {notif.qty.toLocaleString()} {notif.unit} / {notif.min.toLocaleString()} min
+                              </div>
+                              <div className="text-xs text-muted-foreground mt-1">{notif.timestamp}</div>
+                            </div>
+                            <button
+                              onClick={() => clearNotification(notif.id)}
+                              className="text-muted-foreground hover:text-foreground mt-1"
+                              title="Dismiss"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  {notifications.length > 0 && (
+                    <div className="p-3 border-t border-border bg-secondary/30">
+                      <Link
+                        to="/inventory/alerts"
+                        onClick={() => setNotificationOpen(false)}
+                        className="text-sm text-primary hover:underline font-medium"
+                      >
+                        View all alerts →
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )}
+              {notificationOpen && (
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setNotificationOpen(false)}
+                />
+              )}
+            </div>
             <div className="h-9 w-9 rounded-full bg-warm grid place-items-center text-accent-foreground font-medium text-sm">
               M
             </div>
