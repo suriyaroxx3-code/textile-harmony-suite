@@ -4,33 +4,37 @@ import { Section, Stat, Field, inputCls, Btn, Pill } from "@/components/PageHelp
 import { UserPlus } from "lucide-react";
 
 export const Route = createFileRoute("/contractor/daily")({
-  head: () => ({ meta: [{ title: "Daily Workers Salary — Varnam" }] }),
+  head: () => ({ meta: [{ title: "Daily Workers Salary — BrushPack" }] }),
   component: Page,
 });
 
 const workers = [
-  { name: "Anil", role: "Helper", hours: 9, rate: 60, present: true },
-  { name: "Bhavna", role: "Operator", hours: 8, rate: 90, present: true },
-  { name: "Chandru", role: "Loader", hours: 0, rate: 70, present: false },
-  { name: "Deepa", role: "QC", hours: 8, rate: 110, present: true },
-  { name: "Ezhil", role: "Helper", hours: 7, rate: 60, present: true },
+  { name: "Anil",    role: "Sorter",       hours: 9, rate: 70,  present: true },
+  { name: "Bhavna",  role: "Packer",       hours: 8, rate: 90,  present: true },
+  { name: "Chandru", role: "Loader",       hours: 0, rate: 75,  present: false },
+  { name: "Deepa",   role: "QC Inspector", hours: 8, rate: 110, present: true },
+  { name: "Ezhil",   role: "Sealer",       hours: 7, rate: 80,  present: true },
+  { name: "Farhan",  role: "Helper",       hours: 9, rate: 65,  present: true },
 ];
 
 function Page() {
+  const present = workers.filter(w => w.present).length;
+  const dayWages = workers.reduce((s, w) => s + w.hours * w.rate, 0);
+
   return (
-    <DashboardLayout title="Daily Workers Salary" subtitle="Track attendance and daily wages.">
+    <DashboardLayout title="Daily Workers Salary" subtitle="Track attendance and daily wages across the packing floor.">
       <div className="grid sm:grid-cols-3 gap-4 mb-6">
-        <Stat label="Workers Present" value="4 / 5" hint="Today" />
-        <Stat label="Total Wages" value="₹3,180" hint="Today" />
-        <Stat label="This Week" value="₹19,420" hint="6 working days" />
+        <Stat label="Workers Present" value={`${present} / ${workers.length}`} hint="Today" />
+        <Stat label="Total Wages Today" value={`₹${dayWages.toLocaleString("en-IN")}`} hint="6 working hrs avg" />
+        <Stat label="This Week" value="₹38,420" hint="6 working days" />
       </div>
 
       <Section title="Quick Entry" action={<Btn variant="accent"><UserPlus className="h-4 w-4" /> Add Worker</Btn>}>
         <div className="grid md:grid-cols-4 gap-4">
           <Field label="Worker"><input className={inputCls} placeholder="Name" /></Field>
-          <Field label="Role"><input className={inputCls} placeholder="Helper / Operator" /></Field>
+          <Field label="Role"><input className={inputCls} placeholder="Sorter / Packer / QC" /></Field>
           <Field label="Hours"><input type="number" className={inputCls} placeholder="8" /></Field>
-          <Field label="Rate / hr (₹)"><input type="number" className={inputCls} placeholder="60" /></Field>
+          <Field label="Rate / hr (₹)"><input type="number" className={inputCls} placeholder="70" /></Field>
         </div>
         <div className="mt-5 flex justify-end"><Btn>Mark Attendance</Btn></div>
       </Section>
@@ -52,7 +56,7 @@ function Page() {
             </thead>
             <tbody>
               {workers.map((w) => (
-                <tr key={w.name} className="border-b border-border/60 last:border-0">
+                <tr key={w.name} className="border-b border-border/60 last:border-0 hover:bg-secondary/30 transition">
                   <td className="px-6 py-3 font-medium">{w.name}</td>
                   <td className="px-6 py-3 text-muted-foreground">{w.role}</td>
                   <td className="px-6 py-3">{w.hours}</td>

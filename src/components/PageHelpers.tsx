@@ -1,14 +1,4 @@
-import { ReactNode } from "react";
-
-export function Section({
-  title,
-  action,
-  children,
-}: {
-  title: string;
-  action?: ReactNode;
-  children: ReactNode;
-}) {
+export function Section({ title, action, children }) {
   return (
     <div className="rounded-2xl bg-card border border-border shadow-soft overflow-hidden">
       <div className="flex items-center justify-between px-6 py-4 border-b border-border">
@@ -20,9 +10,9 @@ export function Section({
   );
 }
 
-export function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
+export function Stat({ label, value, hint }) {
   return (
-    <div className="rounded-2xl bg-card border border-border p-5 shadow-soft">
+    <div className="rounded-2xl bg-card border border-border p-5 shadow-soft hover-lift">
       <div className="text-sm text-muted-foreground">{label}</div>
       <div className="font-display text-3xl mt-1">{value}</div>
       {hint && <div className="text-xs text-muted-foreground mt-1">{hint}</div>}
@@ -30,13 +20,7 @@ export function Stat({ label, value, hint }: { label: string; value: string; hin
   );
 }
 
-export function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: ReactNode;
-}) {
+export function Field({ label, children }) {
   return (
     <label className="block">
       <span className="text-sm font-medium text-foreground">{label}</span>
@@ -48,11 +32,7 @@ export function Field({
 export const inputCls =
   "w-full rounded-lg border border-input bg-card px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40 focus:border-ring transition";
 
-export function Btn({
-  children,
-  variant = "primary",
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "ghost" | "accent" }) {
+export function Btn({ children, variant = "primary", ...props }) {
   const v =
     variant === "primary"
       ? "bg-primary text-primary-foreground hover:opacity-95 shadow-soft"
@@ -71,13 +51,7 @@ export function Btn({
   );
 }
 
-export function Pill({
-  children,
-  tone = "default",
-}: {
-  children: ReactNode;
-  tone?: "default" | "success" | "warn" | "danger" | "info";
-}) {
+export function Pill({ children, tone = "default" }) {
   const t =
     tone === "success"
       ? "bg-emerald-50 text-emerald-700 border-emerald-200"

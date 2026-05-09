@@ -29,10 +29,10 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Varnam — Textile Operations Suite" },
-      { name: "description", content: "Manage textile production, labour, billing and chemical stock from one calm workspace." },
-      { property: "og:title", content: "Varnam — Textile Operations Suite" },
-      { property: "og:description", content: "Production, labour, billing and inventory management for textile mills." },
+      { title: "BrushPack — Brush Tip Packaging Operations" },
+      { name: "description", content: "Manage brush tip packing production, workforce, billing and packaging materials from one calm workspace." },
+      { property: "og:title", content: "BrushPack — Packaging Operations" },
+      { property: "og:description", content: "Production, workforce, billing and material inventory for brush tip packaging." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -51,7 +51,7 @@ export const Route = createRootRoute({
   notFoundComponent: NotFoundComponent,
 });
 
-function RootShell({ children }: { children: React.ReactNode }) {
+function RootShell({ children }) {
   return (
     <html lang="en">
       <head>

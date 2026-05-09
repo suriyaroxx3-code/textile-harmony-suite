@@ -5,24 +5,22 @@ import { Section, Field, inputCls, Btn } from "@/components/PageHelpers";
 import { Plus, Trash2, Send, Save } from "lucide-react";
 
 export const Route = createFileRoute("/billing/create")({
-  head: () => ({ meta: [{ title: "Create Billing — Varnam" }] }),
+  head: () => ({ meta: [{ title: "Create Billing — BrushPack" }] }),
   component: Page,
 });
 
-type Item = { desc: string; qty: number; rate: number };
-
 function Page() {
-  const [items, setItems] = useState<Item[]>([
-    { desc: "Cotton Poplin — Dyed (Reactive Red)", qty: 540, rate: 185 },
-    { desc: "Finishing & Calendering", qty: 540, rate: 18 },
+  const [items, setItems] = useState([
+    { desc: "Round Tip 12mm — Cardboard Pack", qty: 2500, rate: 12 },
+    { desc: "Flat Tip 18mm — Plastic Sleeve",  qty: 1800, rate: 9  },
   ]);
   const sub = items.reduce((s, i) => s + i.qty * i.rate, 0);
-  const gst = sub * 0.05;
+  const gst = sub * 0.18;
   const total = sub + gst;
 
-  const update = (idx: number, k: keyof Item, v: string) => {
+  const update = (idx, k, v) => {
     const next = [...items];
-    (next[idx] as any)[k] = k === "desc" ? v : Number(v);
+    next[idx][k] = k === "desc" ? v : Number(v);
     setItems(next);
   };
 
@@ -33,8 +31,8 @@ function Page() {
           <Section title="Invoice Details">
             <div className="grid md:grid-cols-2 gap-4">
               <Field label="Invoice No."><input className={inputCls} defaultValue="INV-2026-0184" /></Field>
-              <Field label="Date"><input type="date" className={inputCls} defaultValue="2026-05-06" /></Field>
-              <Field label="Client Name"><input className={inputCls} placeholder="Saraswati Apparels Pvt. Ltd." /></Field>
+              <Field label="Date"><input type="date" className={inputCls} defaultValue="2026-05-09" /></Field>
+              <Field label="Client Name"><input className={inputCls} placeholder="BrightBrush Co. Pvt. Ltd." /></Field>
               <Field label="GSTIN"><input className={inputCls} placeholder="27AAACS1234A1Z5" /></Field>
               <Field label="Address"><input className={inputCls} placeholder="Plot 14, MIDC, Bhiwandi" /></Field>
               <Field label="Place of Supply"><input className={inputCls} placeholder="Maharashtra" /></Field>
@@ -58,7 +56,7 @@ function Page() {
                     </Field>
                   </div>
                   <div className="col-span-4 md:col-span-2">
-                    <Field label={i === 0 ? "Qty (kg)" : ""}>
+                    <Field label={i === 0 ? "Qty (units)" : ""}>
                       <input type="number" className={inputCls} value={it.qty} onChange={(e) => update(i, "qty", e.target.value)} />
                     </Field>
                   </div>
@@ -90,7 +88,7 @@ function Page() {
                 <dd>₹{sub.toLocaleString("en-IN")}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-muted-foreground">GST (5%)</dt>
+                <dt className="text-muted-foreground">GST (18%)</dt>
                 <dd>₹{gst.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</dd>
               </div>
               <div className="border-t border-border pt-3 flex justify-between font-display text-xl">

@@ -4,26 +4,28 @@ import { Section, Stat, Btn, Pill } from "@/components/PageHelpers";
 import { Plus, Search } from "lucide-react";
 
 export const Route = createFileRoute("/inventory/stock")({
-  head: () => ({ meta: [{ title: "Stock — Varnam" }] }),
+  head: () => ({ meta: [{ title: "Stock — BrushPack" }] }),
   component: Page,
 });
 
 const stock = [
-  { name: "Reactive Red 195", cat: "Dye", qty: 42, unit: "kg", min: 25 },
-  { name: "Reactive Blue 21", cat: "Dye", qty: 12, unit: "kg", min: 25 },
-  { name: "Caustic Soda Flakes", cat: "Chemical", qty: 320, unit: "kg", min: 100 },
-  { name: "Hydrogen Peroxide 50%", cat: "Chemical", qty: 80, unit: "L", min: 100 },
-  { name: "Soda Ash", cat: "Chemical", qty: 540, unit: "kg", min: 200 },
-  { name: "Acetic Acid", cat: "Chemical", qty: 18, unit: "L", min: 30 },
+  { name: "Cardboard Sheets — A4",       cat: "Cardboard", qty: 4200, unit: "sheets", min: 2000 },
+  { name: "Cardboard Boxes — Small",     cat: "Cardboard", qty: 1100, unit: "pcs",    min: 1500 },
+  { name: "Plastic Sleeves — Clear 12mm", cat: "Plastic",   qty: 8400, unit: "pcs",    min: 3000 },
+  { name: "Blister Cards — 18mm",         cat: "Plastic",   qty: 920,  unit: "pcs",    min: 1500 },
+  { name: "Printed Labels (Roll)",        cat: "Supplies",  qty: 32,   unit: "rolls",  min: 20   },
+  { name: "Sealing Tape — 48mm",          cat: "Supplies",  qty: 14,   unit: "rolls",  min: 30   },
+  { name: "Hot Glue Sticks",              cat: "Supplies",  qty: 540,  unit: "pcs",    min: 200  },
 ];
 
 function Page() {
+  const low = stock.filter(s => s.qty < s.min).length;
   return (
-    <DashboardLayout title="Stock" subtitle="Live inventory of dyes, chemicals and consumables.">
+    <DashboardLayout title="Stock" subtitle="Live inventory of cardboard, plastic packaging and supplies.">
       <div className="grid sm:grid-cols-3 gap-4 mb-6">
-        <Stat label="Total SKUs" value="38" />
-        <Stat label="Stock Value" value="₹6.4L" hint="At current rates" />
-        <Stat label="Below Minimum" value="3" hint="Action needed" />
+        <Stat label="Total SKUs" value={String(stock.length)} />
+        <Stat label="Stock Value" value="₹4.8L" hint="At current rates" />
+        <Stat label="Below Minimum" value={String(low)} hint="Action needed" />
       </div>
 
       <Section
@@ -52,22 +54,22 @@ function Page() {
             <tbody>
               {stock.map((s) => {
                 const pct = Math.min(100, Math.round((s.qty / (s.min * 2)) * 100));
-                const low = s.qty < s.min;
+                const isLow = s.qty < s.min;
                 return (
-                  <tr key={s.name} className="border-b border-border/60 last:border-0">
+                  <tr key={s.name} className="border-b border-border/60 last:border-0 hover:bg-secondary/30 transition">
                     <td className="px-6 py-3 font-medium">{s.name}</td>
                     <td className="px-6 py-3 text-muted-foreground">{s.cat}</td>
-                    <td className="px-6 py-3">{s.qty} {s.unit}</td>
-                    <td className="px-6 py-3 text-muted-foreground">{s.min} {s.unit}</td>
+                    <td className="px-6 py-3">{s.qty.toLocaleString()} {s.unit}</td>
+                    <td className="px-6 py-3 text-muted-foreground">{s.min.toLocaleString()} {s.unit}</td>
                     <td className="px-6 py-3 w-72">
                       <div className="flex items-center gap-3">
                         <div className="flex-1 h-2 rounded-full bg-secondary overflow-hidden">
                           <div
-                            className={`h-full ${low ? "bg-destructive" : "bg-primary"}`}
+                            className={`h-full transition-all ${isLow ? "bg-destructive" : "bg-primary"}`}
                             style={{ width: `${pct}%` }}
                           />
                         </div>
-                        <Pill tone={low ? "danger" : "success"}>{low ? "Low" : "OK"}</Pill>
+                        <Pill tone={isLow ? "danger" : "success"}>{isLow ? "Low" : "OK"}</Pill>
                       </div>
                     </td>
                   </tr>
