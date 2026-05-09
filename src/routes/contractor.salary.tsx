@@ -1,27 +1,32 @@
+// @ts-nocheck
 import { createFileRoute } from "@tanstack/react-router";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Section, Stat, Pill, Btn } from "@/components/PageHelpers";
 import { Download } from "lucide-react";
 
 export const Route = createFileRoute("/contractor/salary")({
-  head: () => ({ meta: [{ title: "Contractor Salary — Varnam" }] }),
+  head: () => ({ meta: [{ title: "Contractor Salary — BrushPack" }] }),
   component: Page,
 });
 
 const rows = [
-  { name: "Ramesh Kumar", area: "Dyeing", workers: 24, amount: 84000, status: "Paid" },
-  { name: "Suresh Pillai", area: "Finishing", workers: 18, amount: 62500, status: "Pending" },
-  { name: "Mahesh Naidu", area: "QC & Packing", workers: 12, amount: 41200, status: "Paid" },
-  { name: "Lakshmi Reddy", area: "Pre-treatment", workers: 16, amount: 56800, status: "Pending" },
+  { name: "Ramesh Kumar", area: "Sorting Line A", workers: 22, amount: 78000, status: "Paid" },
+  { name: "Suresh Pillai", area: "Cardboard Packing", workers: 28, amount: 96500, status: "Pending" },
+  { name: "Mahesh Naidu", area: "Plastic Sleeve Line", workers: 18, amount: 62200, status: "Paid" },
+  { name: "Lakshmi Reddy", area: "QC & Dispatch", workers: 24, amount: 84800, status: "Pending" },
 ];
 
 function Page() {
+  const total = rows.reduce((s, r) => s + r.amount, 0);
+  const paid = rows.filter(r => r.status === "Paid").reduce((s, r) => s + r.amount, 0);
+  const pending = total - paid;
+
   return (
-    <DashboardLayout title="Contractor Salary" subtitle="Monthly payouts to area contractors.">
+    <DashboardLayout title="Contractor Salary" subtitle="Monthly payouts to area contractors managing the packing lines.">
       <div className="grid sm:grid-cols-3 gap-4 mb-6">
-        <Stat label="Total Payable" value="₹2,44,500" hint="May 2026" />
-        <Stat label="Paid" value="₹1,25,200" hint="2 contractors" />
-        <Stat label="Pending" value="₹1,19,300" hint="2 contractors" />
+        <Stat label="Total Payable" value={`₹${total.toLocaleString("en-IN")}`} hint="May 2026" />
+        <Stat label="Paid" value={`₹${paid.toLocaleString("en-IN")}`} hint="2 contractors" />
+        <Stat label="Pending" value={`₹${pending.toLocaleString("en-IN")}`} hint="2 contractors" />
       </div>
 
       <Section
@@ -33,7 +38,7 @@ function Page() {
             <thead>
               <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground border-b border-border">
                 <th className="px-6 py-3">Contractor</th>
-                <th className="px-6 py-3">Area</th>
+                <th className="px-6 py-3">Line / Area</th>
                 <th className="px-6 py-3">Workers</th>
                 <th className="px-6 py-3">Amount</th>
                 <th className="px-6 py-3">Status</th>
@@ -42,7 +47,7 @@ function Page() {
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.name} className="border-b border-border/60 last:border-0">
+                <tr key={r.name} className="border-b border-border/60 last:border-0 hover:bg-secondary/30 transition">
                   <td className="px-6 py-3">
                     <div className="flex items-center gap-3">
                       <div className="h-8 w-8 rounded-full bg-warm grid place-items-center text-accent-foreground text-xs font-medium">

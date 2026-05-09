@@ -1,21 +1,22 @@
+// @ts-nocheck
 import { createFileRoute } from "@tanstack/react-router";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Section, Pill, Btn } from "@/components/PageHelpers";
 import { Plus } from "lucide-react";
 
 export const Route = createFileRoute("/billing/quotation")({
-  head: () => ({ meta: [{ title: "Quotation — Varnam" }] }),
+  head: () => ({ meta: [{ title: "Quotation — BrushPack" }] }),
   component: Page,
 });
 
 const quotes = [
-  { id: "Q-0104", client: "Mira Exports", date: "04 May 2026", value: 184500, status: "Sent" },
-  { id: "Q-0103", client: "Anjali Mills", date: "01 May 2026", value: 92800, status: "Accepted" },
-  { id: "Q-0102", client: "Vanya Textiles", date: "28 Apr 2026", value: 47200, status: "Draft" },
-  { id: "Q-0101", client: "Kirti Fashions", date: "22 Apr 2026", value: 256000, status: "Expired" },
+  { id: "Q-0104", client: "BrightBrush Co.",  date: "07 May 2026", value: 184500, status: "Sent" },
+  { id: "Q-0103", client: "ArtPro Supplies",  date: "04 May 2026", value: 92800,  status: "Accepted" },
+  { id: "Q-0102", client: "Studio Mart",      date: "29 Apr 2026", value: 47200,  status: "Draft" },
+  { id: "Q-0101", client: "Maven Brushes",    date: "22 Apr 2026", value: 256000, status: "Expired" },
 ];
 
-const tone = (s: string) =>
+const tone = (s) =>
   s === "Accepted" ? "success" : s === "Sent" ? "info" : s === "Expired" ? "danger" : "warn";
 
 function Page() {
@@ -39,12 +40,12 @@ function Page() {
             </thead>
             <tbody>
               {quotes.map((q) => (
-                <tr key={q.id} className="border-b border-border/60 last:border-0">
+                <tr key={q.id} className="border-b border-border/60 last:border-0 hover:bg-secondary/30 transition">
                   <td className="px-6 py-3 font-medium">{q.id}</td>
                   <td className="px-6 py-3">{q.client}</td>
                   <td className="px-6 py-3 text-muted-foreground">{q.date}</td>
                   <td className="px-6 py-3 font-medium">₹{q.value.toLocaleString("en-IN")}</td>
-                  <td className="px-6 py-3"><Pill tone={tone(q.status) as any}>{q.status}</Pill></td>
+                  <td className="px-6 py-3"><Pill tone={tone(q.status)}>{q.status}</Pill></td>
                   <td className="px-6 py-3 text-right">
                     <Btn variant="ghost">Open</Btn>
                   </td>

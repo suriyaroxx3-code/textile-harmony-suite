@@ -1,12 +1,13 @@
+// @ts-nocheck
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Eye, EyeOff, Loader2, Target } from "lucide-react";
+import { Eye, EyeOff, Loader2, Package } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — Bullseye" },
-      { name: "description", content: "Manager login for Bullseye textile operations." },
+      { title: "Sign in — BrushPack" },
+      { name: "description", content: "Manager login for BrushPack packaging operations." },
     ],
   }),
   component: LoginPage,
@@ -19,7 +20,7 @@ function LoginPage() {
   const [username, setUsername] = useState("manager");
   const [password, setPassword] = useState("");
 
-  const submit = (e: React.FormEvent) => {
+  const submit = (e) => {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => navigate({ to: "/" }), 600);
@@ -27,19 +28,18 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-soft">
-      {/* Ambient blobs */}
       <div className="pointer-events-none absolute -top-40 -left-40 h-[28rem] w-[28rem] rounded-full bg-primary/20 blur-3xl animate-blob" />
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-accent/25 blur-3xl animate-blob [animation-delay:3s]" />
+      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-accent/30 blur-3xl animate-blob [animation-delay:3s]" />
       <div className="pointer-events-none absolute top-1/3 right-1/4 h-72 w-72 rounded-full bg-chart-3/20 blur-3xl animate-blob [animation-delay:6s]" />
 
       <div className="relative w-full max-w-md animate-scale-in">
         <div className="rounded-3xl bg-card/80 backdrop-blur-xl border border-border shadow-elegant p-8 sm:p-10">
           <div className="flex flex-col items-center text-center">
             <div className="relative h-16 w-16 rounded-2xl bg-hero grid place-items-center text-primary-foreground shadow-soft animate-float">
-              <Target className="h-8 w-8" strokeWidth={2.2} />
+              <Package className="h-8 w-8" strokeWidth={2.2} />
               <span className="absolute -inset-1 rounded-2xl bg-primary/30 blur-lg -z-10" />
             </div>
-            <h1 className="mt-5 font-display text-3xl tracking-tight">Bullseye</h1>
+            <h1 className="mt-5 font-display text-3xl tracking-tight">BrushPack</h1>
             <p className="text-sm text-muted-foreground mt-1">Sign in to continue</p>
           </div>
 
