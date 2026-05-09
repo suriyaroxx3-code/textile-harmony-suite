@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StstusRouteImport } from './routes/ststus'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductionWeightRouteImport } from './routes/production.weight'
@@ -21,6 +22,11 @@ import { Route as ContractorDailyRouteImport } from './routes/contractor.daily'
 import { Route as BillingQuotationRouteImport } from './routes/billing.quotation'
 import { Route as BillingCreateRouteImport } from './routes/billing.create'
 
+const StstusRoute = StstusRouteImport.update({
+  id: '/ststus',
+  path: '/ststus',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -80,6 +86,7 @@ const BillingCreateRoute = BillingCreateRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/ststus': typeof StstusRoute
   '/billing/create': typeof BillingCreateRoute
   '/billing/quotation': typeof BillingQuotationRoute
   '/contractor/daily': typeof ContractorDailyRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/ststus': typeof StstusRoute
   '/billing/create': typeof BillingCreateRoute
   '/billing/quotation': typeof BillingQuotationRoute
   '/contractor/daily': typeof ContractorDailyRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/ststus': typeof StstusRoute
   '/billing/create': typeof BillingCreateRoute
   '/billing/quotation': typeof BillingQuotationRoute
   '/contractor/daily': typeof ContractorDailyRoute
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/ststus'
     | '/billing/create'
     | '/billing/quotation'
     | '/contractor/daily'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/ststus'
     | '/billing/create'
     | '/billing/quotation'
     | '/contractor/daily'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/login'
+    | '/ststus'
     | '/billing/create'
     | '/billing/quotation'
     | '/contractor/daily'
@@ -162,6 +174,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  StstusRoute: typeof StstusRoute
   BillingCreateRoute: typeof BillingCreateRoute
   BillingQuotationRoute: typeof BillingQuotationRoute
   ContractorDailyRoute: typeof ContractorDailyRoute
@@ -175,6 +188,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ststus': {
+      id: '/ststus'
+      path: '/ststus'
+      fullPath: '/ststus'
+      preLoaderRoute: typeof StstusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -258,6 +278,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  StstusRoute: StstusRoute,
   BillingCreateRoute: BillingCreateRoute,
   BillingQuotationRoute: BillingQuotationRoute,
   ContractorDailyRoute: ContractorDailyRoute,
@@ -271,3 +292,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
